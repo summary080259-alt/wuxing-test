@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>五行人格測驗</title>
+
+<style>
+body{
+font-family:Arial;
+max-width:900px;
+margin:auto;
+line-height:1.8;
+}
+
+.question{
+margin:20px 0;
+padding:15px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+button{
+padding:14px 30px;
+font-size:18px;
+margin:30px 0;
+}
+
+.resultbox{
+border:2px solid #333;
+padding:20px;
+margin-top:30px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>五行人格測驗</h1>
+<p>請選擇最符合你的描述</p>
+
+<form id="quiz"></form>
+
+<button onclick="calculate()">查看結果</button>
+
+<div id="result" class="resultbox"></div>
+
+<script>
+
+const questions=[
+
+{q:"1. 當新的機會出現時",o:[
+["想立即嘗試突破","wood"],
+["興奮地與人分享","fire"],
+["先詢問大家想法","earth"],
+["評估可行性","metal"],
+["思考長遠策略","water"]
+]},
+
+{q:"2. 在團隊中你通常",o:[
+["帶頭推動事情","wood"],
+["活絡氣氛","fire"],
+["照顧大家","earth"],
+["維持規範","metal"],
+["提供策略","water"]
+]},
+
+{q:"3. 朋友遇到困難時",o:[
+["鼓勵他改變","wood"],
+["用幽默讓他開心","fire"],
+["陪伴傾聽","earth"],
+["給實際建議","metal"],
+["分析原因","water"]
+]},
+
+{q:"4. 做決定時你通常",o:[
+["快速行動","wood"],
+["依感覺","fire"],
+["考慮關係","earth"],
+["看制度","metal"],
+["蒐集資訊","water"]
+]},
+
+{q:"5. 在陌生環境中",o:[
+["主動探索","wood"],
+["主動聊天","fire"],
+["慢慢融入","earth"],
+["觀察規則","metal"],
+["觀察整體","water"]
+]},
+
+{q:"6. 工作時你最重視",o:[
+["發展機會","wood"],
+["工作氣氛","fire"],
+["團隊合作","earth"],
+["品質標準","metal"],
+["長遠策略","water"]
+]},
+
+{q:"7. 如果事情失敗",o:[
+["再嘗試新方法","wood"],
+["調整情緒","fire"],
+["尋求支持","earth"],
+["檢討錯誤","metal"],
+["分析原因","water"]
+]},
+
+{q:"8. 別人通常說你",o:[
+["很有衝勁","wood"],
+["很有魅力","fire"],
+["很可靠","earth"],
+["很理性","metal"],
+["很聰明","water"]
+]},
+
+{q:"9. 你最不喜歡",o:[
+["停滯不前","wood"],
+["氣氛沉悶","fire"],
+["人際衝突","earth"],
+["混亂無序","metal"],
+["沒有邏輯","water"]
+]},
+
+{q:"10. 學習新事物時",o:[
+["邊做邊學","wood"],
+["一起討論","fire"],
+["慢慢吸收","earth"],
+["系統整理","metal"],
+["深入研究","water"]
+]},
+
+{q:"11. 面對壓力時",o:[
+["突破挑戰","wood"],
+["找人分享","fire"],
+["尋求支持","earth"],
+["整理問題","metal"],
+["思考策略","water"]
+]},
+
+{q:"12. 當團隊發生衝突",o:[
+["提出新方向","wood"],
+["緩和氣氛","fire"],
+["維持和諧","earth"],
+["講道理","metal"],
+["分析問題","water"]
+]},
+
+{q:"13. 別人最欣賞你",o:[
+["行動力","wood"],
+["感染力","fire"],
+["包容力","earth"],
+["判斷力","metal"],
+["洞察力","water"]
+]},
+
+{q:"14. 面對未知挑戰",o:[
+["勇於嘗試","wood"],
+["保持熱情","fire"],
+["穩定前進","earth"],
+["制定計畫","metal"],
+["分析局勢","water"]
+]},
+
+{q:"15. 在朋友群中",o:[
+["帶領大家","wood"],
+["活躍氣氛","fire"],
+["照顧朋友","earth"],
+["給建議","metal"],
+["提出想法","water"]
+]},
+
+{q:"16. 做事情時你",o:[
+["快速行動","wood"],
+["保持熱情","fire"],
+["重視合作","earth"],
+["追求完美","metal"],
+["深度思考","water"]
+]},
+
+{q:"17. 你的人生態度",o:[
+["不斷成長","wood"],
+["享受生活","fire"],
+["珍惜關係","earth"],
+["重視原則","metal"],
+["理解世界","water"]
+]},
+
+{q:"18. 別人找你幫忙通常因為",o:[
+["你行動力強","wood"],
+["你很有感染力","fire"],
+["你很溫暖","earth"],
+["你很理性","metal"],
+["你很有智慧","water"]
+]},
+
+{q:"19. 當事情卡住",o:[
+["換個方法","wood"],
+["鼓勵大家","fire"],
+["大家一起想","earth"],
+["重新檢查","metal"],
+["深入分析","water"]
+]},
+
+{q:"20. 你比較像",o:[
+["開拓者","wood"],
+["表演者","fire"],
+["守護者","earth"],
+["管理者","metal"],
+["策略家","water"]
+]},
+
+{q:"21. 當你不開心時",o:[
+["想改變現況","wood"],
+["找人聊天","fire"],
+["找人陪伴","earth"],
+["整理事情","metal"],
+["獨處思考","water"]
+]},
+
+{q:"22. 你的優點",o:[
+["勇於突破","wood"],
+["充滿熱情","fire"],
+["耐心穩定","earth"],
+["嚴謹理性","metal"],
+["智慧洞察","water"]
+]},
+
+{q:"23. 在壓力下你",o:[
+["迎接挑戰","wood"],
+["鼓舞大家","fire"],
+["維持穩定","earth"],
+["控制細節","metal"],
+["冷靜分析","water"]
+]},
+
+{q:"24. 你最嚮往",o:[
+["開創未來","wood"],
+["精彩生活","fire"],
+["溫暖關係","earth"],
+["秩序世界","metal"],
+["智慧人生","water"]
+]},
+
+{q:"25. 整體而言你是",o:[
+["開創型","wood"],
+["熱情型","fire"],
+["穩定型","earth"],
+["理性型","metal"],
+["思考型","water"]
+]}
+
+]
+
+let quiz=document.getElementById("quiz")
+
+questions.forEach((q,i)=>{
+
+let div=document.createElement("div")
+div.className="question"
+
+let html="<b>"+q.q+"</b><br>"
+
+q.o.forEach(opt=>{
+html+=`<input type="radio" name="q${i}" value="${opt[1]}"> ${opt[0]}<br>`
+})
+
+div.innerHTML=html
+quiz.appendChild(div)
+
+})
+
+function calculate(){
+
+let score={wood:0,fire:0,earth:0,metal:0,water:0}
+
+questions.forEach((q,i)=>{
+
+let radios=document.getElementsByName("q"+i)
+
+radios.forEach(r=>{
+if(r.checked){
+score[r.value]++
+}
+})
+
+})
+
+let total=25
+
+let percent={
+wood:Math.round(score.wood/total*100),
+fire:Math.round(score.fire/total*100),
+earth:Math.round(score.earth/total*100),
+metal:Math.round(score.metal/total*100),
+water:Math.round(score.water/total*100)
+}
+
+let sorted=Object.entries(score).sort((a,b)=>b[1]-a[1])
+
+let main=sorted[0][0]
+let second=sorted[1][0]
+
+const desc={
+wood:"木型人格：開創、成長、行動力強。",
+fire:"火型人格：熱情、外向、感染力強。",
+earth:"土型人格：穩定、可靠、重視關係。",
+metal:"金型人格：理性、嚴謹、重視規則。",
+water:"水型人格：智慧、洞察、思考深入。"
+}
+
+document.getElementById("result").innerHTML=
+
+"<h2>測驗結果</h2>"+
+"木："+percent.wood+"%<br>"+
+"火："+percent.fire+"%<br>"+
+"土："+percent.earth+"%<br>"+
+"金："+percent.metal+"%<br>"+
+"水："+percent.water+"%<br><br>"+
+"<b>主要人格：</b>"+main+"<br>"+desc[main]+"<br><br>"+
+"<b>次要人格：</b>"+second+"<br>"+desc[second]
+
+}
+
+</script>
+
+</body>
+</html>
